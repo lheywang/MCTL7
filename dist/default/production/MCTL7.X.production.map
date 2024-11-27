@@ -1,0 +1,48 @@
+MPLINK 5.09, LINKER
+Linker Map File - Created Wed Nov 27 17:19:46 2024
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000002
+                   .cinit    romdata   0x000001    program   0x000004
+                    USART       code   0x000003    program   0x000064
+                      ADC       code   0x000035    program   0x00001c
+.config_2007_BUILD/DEFAULT/PRODUCTION/SRC/MAI       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000042      
+                            0x002007    0x002007      
+            68 out of 8454 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+              ADC_CONVERT   0x00003e    program     static src\ADC.asm              
+                  ADC_GET   0x000040    program     static src\ADC.asm              
+                 ADC_INIT   0x000035    program     static src\ADC.asm              
+               USART_INIT   0x000003    program     static SRC\USART.asm            
+               USART_INIT   0x00001c    program     static src\USART.asm            
+               USART_SEND   0x000014    program     static SRC\USART.asm            
+               USART_SEND   0x00002d    program     static src\USART.asm            
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+               USART_INIT   0x000003    program     static SRC\USART.asm            
+               USART_SEND   0x000014    program     static SRC\USART.asm            
+               USART_INIT   0x00001c    program     static src\USART.asm            
+               USART_SEND   0x00002d    program     static src\USART.asm            
+                 ADC_INIT   0x000035    program     static src\ADC.asm              
+              ADC_CONVERT   0x00003e    program     static src\ADC.asm              
+                  ADC_GET   0x000040    program     static src\ADC.asm              
+
+
