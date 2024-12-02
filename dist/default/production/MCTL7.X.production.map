@@ -1,0 +1,58 @@
+MPLINK 5.09, LINKER
+Linker Map File - Created Mon Dec 02 11:47:44 2024
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x0000e4
+                   .cinit    romdata   0x000072    program   0x000004
+.config_2007_BUILD/DEFAULT/PRODUCTION/SRC/MAI       code   0x002007    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000073      
+                            0x002007    0x002007      
+            117 out of 8454 program addresses used, program memory utilization is 1%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+              ADC_CONVERT   0x00000b    program     static src\main.asm             
+                  ADC_GET   0x00000d    program     static src\main.asm             
+                 ADC_INIT   0x000002    program     static src\main.asm             
+                  CVT_END   0x00005d    program     static src\main.asm             
+                  CVT_INT   0x000051    program     static src\main.asm             
+                  CVT_SUB   0x000046    program     static src\main.asm             
+                 CVT_SUB2   0x000056    program     static src\main.asm             
+                 GET_VOLT   0x000039    program     static src\main.asm             
+               USART_INIT   0x000011    program     static src\main.asm             
+               USART_SEND   0x000022    program     static src\main.asm             
+       USART_SEND_ADC_BUF   0x00002a    program     static src\main.asm             
+                     init   0x00006a    program     static src\main.asm             
+                    start   0x00006d    program     static src\main.asm             
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                 ADC_INIT   0x000002    program     static src\main.asm             
+              ADC_CONVERT   0x00000b    program     static src\main.asm             
+                  ADC_GET   0x00000d    program     static src\main.asm             
+               USART_INIT   0x000011    program     static src\main.asm             
+               USART_SEND   0x000022    program     static src\main.asm             
+       USART_SEND_ADC_BUF   0x00002a    program     static src\main.asm             
+                 GET_VOLT   0x000039    program     static src\main.asm             
+                  CVT_SUB   0x000046    program     static src\main.asm             
+                  CVT_INT   0x000051    program     static src\main.asm             
+                 CVT_SUB2   0x000056    program     static src\main.asm             
+                  CVT_END   0x00005d    program     static src\main.asm             
+                     init   0x00006a    program     static src\main.asm             
+                    start   0x00006d    program     static src\main.asm             
+
+
