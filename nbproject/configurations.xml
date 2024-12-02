@@ -13,8 +13,6 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>src/main.asm</itemPath>
-      <itemPath>src/USART.asm</itemPath>
-      <itemPath>src/ADC.asm</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
