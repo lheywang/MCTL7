@@ -1,3 +1,13 @@
-Warning[207] SRC\MAIN.ASM 23 : Found label after column 1. (CVT)
-Warning[207] SRC\MAIN.ASM 24 : Found label after column 1. (CNT)
-Message[305] SRC\MAIN.ASM 149 : Using default destination of 1 (file).
+Warning[207] SRC\MAIN.ASM 28 : Found label after column 1. (CVT)
+Warning[207] SRC\MAIN.ASM 29 : Found label after column 1. (CNT)
+Warning[207] SRC\MAIN.ASM 30 : Found label after column 1. (SUM)
+Warning[207] SRC\MAIN.ASM 31 : Found label after column 1. (SAV)
+Warning[207] SRC\MAIN.ASM 32 : Found label after column 1. (CNT2)
+Warning[207] SRC\MAIN.ASM 35 : Found label after column 1. (OUT1)
+Warning[207] SRC\MAIN.ASM 36 : Found label after column 1. (OUT2)
+Warning[207] SRC\MAIN.ASM 37 : Found label after column 1. (OUT3)
+Warning[207] SRC\MAIN.ASM 38 : Found label after column 1. (OUT4)
+Warning[207] SRC\MAIN.ASM 39 : Found label after column 1. (OUT5)
+Message[305] SRC\MAIN.ASM 198 : Using default destination of 1 (file).
+Message[305] SRC\MAIN.ASM 213 : Using default destination of 1 (file).
+Message[305] SRC\MAIN.ASM 222 : Using default destination of 1 (file).
