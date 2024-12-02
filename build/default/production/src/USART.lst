@@ -1,4 +1,4 @@
-MPASM 5.86                         USART.ASM   11-27-2024  17:19:45         PAGE  1
+MPASM 5.86                         USART.ASM   12-2-2024  8:19:22         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,7 +57,7 @@ Warning[205]: Found directive in column 1. (ERRORLEVEL)
 000E   3080           00037     MOVLW           B'10000000'     ; Serial port Enabled
                       00038                                     ; 8 bit data
                       00039                                     ; Don't care
-MPASM 5.86                         USART.ASM   11-27-2024  17:19:45         PAGE  2
+MPASM 5.86                         USART.ASM   12-2-2024  8:19:22         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -91,7 +91,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00065 ; ------------------------------------------------------------------------------
                       00066 
                       00067     END                             ; End of file
-MPASM 5.86                         USART.ASM   11-27-2024  17:19:45         PAGE  3
+MPASM 5.86                         USART.ASM   12-2-2024  8:19:22         PAGE  3
 
 
 SYMBOL TABLE
@@ -150,7 +150,7 @@ CSRC                              00000007
 D                                 00000005
 DATA_ADDRESS                      00000005
 DC                                00000001
-MPASM 5.86                         USART.ASM   11-27-2024  17:19:45         PAGE  4
+MPASM 5.86                         USART.ASM   12-2-2024  8:19:22         PAGE  4
 
 
 SYMBOL TABLE
@@ -209,7 +209,7 @@ PCFG0                             00000000
 PCFG1                             00000001
 PCFG2                             00000002
 PCFG3                             00000003
-MPASM 5.86                         USART.ASM   11-27-2024  17:19:45         PAGE  5
+MPASM 5.86                         USART.ASM   12-2-2024  8:19:22         PAGE  5
 
 
 SYMBOL TABLE
@@ -268,7 +268,7 @@ RCD8                              00000000
 RCEN                              00000003
 RCIE                              00000005
 RCIF                              00000005
-MPASM 5.86                         USART.ASM   11-27-2024  17:19:45         PAGE  6
+MPASM 5.86                         USART.ASM   12-2-2024  8:19:22         PAGE  6
 
 
 SYMBOL TABLE
@@ -327,7 +327,7 @@ T1CON                             00000010
 T1INSYNC                          00000002
 T1OSCEN                           00000003
 T1SYNC                            00000002
-MPASM 5.86                         USART.ASM   11-27-2024  17:19:45         PAGE  7
+MPASM 5.86                         USART.ASM   12-2-2024  8:19:22         PAGE  7
 
 
 SYMBOL TABLE
@@ -386,7 +386,7 @@ TRISD2                            00000002
 TRISD3                            00000003
 TRISD4                            00000004
 TRISD5                            00000005
-MPASM 5.86                         USART.ASM   11-27-2024  17:19:45         PAGE  8
+MPASM 5.86                         USART.ASM   12-2-2024  8:19:22         PAGE  8
 
 
 SYMBOL TABLE
@@ -445,7 +445,7 @@ _LVP_OFF                          00003F7F
 _LVP_ON                           00003FFF
 _PWRTE_OFF                        00003FFF
 _PWRTE_ON                         00003FF7
-MPASM 5.86                         USART.ASM   11-27-2024  17:19:45         PAGE  9
+MPASM 5.86                         USART.ASM   12-2-2024  8:19:22         PAGE  9
 
 
 SYMBOL TABLE

@@ -1,4 +1,4 @@
-MPASM 5.86                           ADC.ASM   11-27-2024  17:19:45         PAGE  1
+MPASM 5.86                           ADC.ASM   12-2-2024  8:19:22         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,7 +57,7 @@ Warning[205]: Found directive in column 1. (ERRORLEVEL)
                       00037     
 000A   0008           00038     RETURN
                       00039     
-MPASM 5.86                           ADC.ASM   11-27-2024  17:19:45         PAGE  2
+MPASM 5.86                           ADC.ASM   12-2-2024  8:19:22         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -75,7 +75,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00049 ; ------------------------------------------------------------------------------
                       00050 
                       00051     END                             ; End of file
-MPASM 5.86                           ADC.ASM   11-27-2024  17:19:45         PAGE  3
+MPASM 5.86                           ADC.ASM   12-2-2024  8:19:22         PAGE  3
 
 
 SYMBOL TABLE
@@ -134,7 +134,7 @@ CKE                               00000006
 CKP                               00000004
 CREN                              00000004
 CSRC                              00000007
-MPASM 5.86                           ADC.ASM   11-27-2024  17:19:45         PAGE  4
+MPASM 5.86                           ADC.ASM   12-2-2024  8:19:22         PAGE  4
 
 
 SYMBOL TABLE
@@ -193,7 +193,7 @@ OERR                              00000001
 OPTION_REG                        00000081
 P                                 00000004
 PCFG0                             00000000
-MPASM 5.86                           ADC.ASM   11-27-2024  17:19:45         PAGE  5
+MPASM 5.86                           ADC.ASM   12-2-2024  8:19:22         PAGE  5
 
 
 SYMBOL TABLE
@@ -252,7 +252,7 @@ RC7                               00000007
 RC8_9                             00000006
 RC9                               00000006
 RCD8                              00000000
-MPASM 5.86                           ADC.ASM   11-27-2024  17:19:45         PAGE  6
+MPASM 5.86                           ADC.ASM   12-2-2024  8:19:22         PAGE  6
 
 
 SYMBOL TABLE
@@ -311,7 +311,7 @@ T0SE                              00000004
 T1CKPS0                           00000004
 T1CKPS1                           00000005
 T1CON                             00000010
-MPASM 5.86                           ADC.ASM   11-27-2024  17:19:45         PAGE  7
+MPASM 5.86                           ADC.ASM   12-2-2024  8:19:22         PAGE  7
 
 
 SYMBOL TABLE
@@ -370,7 +370,7 @@ TRISD                             00000088
 TRISD0                            00000000
 TRISD1                            00000001
 TRISD2                            00000002
-MPASM 5.86                           ADC.ASM   11-27-2024  17:19:45         PAGE  8
+MPASM 5.86                           ADC.ASM   12-2-2024  8:19:22         PAGE  8
 
 
 SYMBOL TABLE
@@ -429,7 +429,7 @@ _LP_OSC                           00003FFC
 _LVP_OFF                          00003F7F
 _LVP_ON                           00003FFF
 _PWRTE_OFF                        00003FFF
-MPASM 5.86                           ADC.ASM   11-27-2024  17:19:45         PAGE  9
+MPASM 5.86                           ADC.ASM   12-2-2024  8:19:22         PAGE  9
 
 
 SYMBOL TABLE

@@ -17,8 +17,6 @@
     
     include "USART.asm"
     include "ADC.asm"
-    
-    MOVLW	    'A'
 
 init:
     ; Config Serial port (RX)
@@ -27,7 +25,8 @@ init:
     ; Config ADC readings.
     call	    ADC_INIT
     
-start:	
+start:
+    MOVLW	    'A'
     call	    USART_SEND
     goto	    start
     
