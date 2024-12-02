@@ -222,8 +222,8 @@ CVT_SUB2:
     INCF	    CNT2	    ; If not carry nor zero : Increment and restart
     
     GOTO	    CVT_SUB2	    ; Jump
-    
-CVT_END:
+	
+CVT_END:			    ; Formatting the output by sending the right characters
     MOVFW	    CNT
     ADDLW	    30h
     MOVWF	    OUT1
