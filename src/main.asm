@@ -18,6 +18,12 @@
     GOTO	init
     
 ; ------------------------------------------------------------------------------
+; MEMORY
+; ------------------------------------------------------------------------------
+    CVT		EQU	    20h
+    CNT		EQU	    21h
+    
+; ------------------------------------------------------------------------------
 ; ADC
 ; ------------------------------------------------------------------------------
     
@@ -117,6 +123,37 @@ USART_SEND:
     RETURN			    ; End of function
     
 ; ------------------------------------------------------------------------------
+; CONVERSION
+; ------------------------------------------------------------------------------
+GET_VOLT:
+    ; Get the integer part of the voltage
+    ; Used register : W
+    ; Input register : W
+    ; Return register : W
+    
+    BANKSEL	    TMR0	    ; Dummy selection of the bank 0$
+    
+    MOVWF	    CVT		    ; Place W into CVT
+    
+    MOVLW	    .0
+    MOVWF	    CNT		    ; Initialize counter at 0
+
+CVT_SUB:
+    CLRC			    ; Clear carry
+    MOVLW	    .51		    ; Place 51 in the W register
+    SUBWF	    CVT,    W	    ; Remove 51 of CVT
+    MOVWF	    CVT
+    
+    BNC		    CVT_END	    ; Exit if negative found
+    
+    INCF	    CNT		    ; If not carry nor zero : Increment and restart
+    GOTO	    CVT_SUB
+    
+CVT_END:
+    MOVFW	    CNT		    
+    RETURN
+    
+; ------------------------------------------------------------------------------
 ; MAIN
 ; ------------------------------------------------------------------------------
 
@@ -134,6 +171,8 @@ init:
 start:
     CALL	    ADC_GET
     MOVFW	    ADRESH	    ; Copy the result into W
+    CALL	    GET_VOLT
+    ADDLW	    30h
     
     CALL	    USART_SEND
     GOTO	    start

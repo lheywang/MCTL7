@@ -1,1 +1,3 @@
-Error[113]   SRC\MAIN.ASM 135 : Symbol not previously defined (ADC_READ)
+Warning[207] SRC\MAIN.ASM 23 : Found label after column 1. (CVT)
+Warning[207] SRC\MAIN.ASM 24 : Found label after column 1. (CNT)
+Message[305] SRC\MAIN.ASM 149 : Using default destination of 1 (file).
