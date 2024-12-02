@@ -2,8 +2,8 @@
 ;	
 
 ;   Defining assembling parameters
-    list	    p=16f877
-    include	    "p16f877.inc"
+    LIST	    p=16f877
+    INCLUDE	    "p16f877.inc"
     ERRORLEVEL	    -302		; No warnings about banksel
     ERRORLEVEL	    -205		; No warnings about found directives
    	
@@ -12,8 +12,10 @@
     __CONFIG _FOSC_HS & _WDTE_OFF & _PWRTE_OFF & _CP_OFF & _BOREN_OFF & _LVP_OFF & _CPD_OFF & _WRT_ON
     
 ;   Start at the reset vector
-    org	    0x000
-    nop
+    ORG	    0x000
+    NOP
+    
+    GOTO	init
     
 ; ------------------------------------------------------------------------------
 ; ADC
@@ -40,7 +42,8 @@ ADC_INIT:
     
 ADC_CONVERT:
     ; Transmit the value of W over USART
-    ; Used register : W$
+    ; Used register : W
+    ; Return registe : W
     
     BSF		ADCON0,	    GO
     
@@ -48,11 +51,13 @@ ADC_CONVERT:
     
 ADC_GET:
     ; ADC Convert shall be runned before
-    ; Used register : W
+    ; Used register : /
     
-    BTFSC	ADCON0,	    GO
-	goto	ADC_GET
+    CALL	ADC_CONVERT	    ; Start the conversion
     
+    BTFSC	ADCON0,	    GO	    ; Waiting for the conversion to end
+	GOTO	ADC_GET
+
     RETURN			    ; End of function
     
 ; ------------------------------------------------------------------------------
@@ -117,14 +122,20 @@ USART_SEND:
 
 init:
     ; Config Serial port (RX)
-    call	    USART_INIT
+    CALL	    USART_INIT
     
     ; Config ADC readings.
-    call	    ADC_INIT
+    CALL	    ADC_INIT
+    
+    
+    ; Jump to the start
+    GOTO	    start
     
 start:
-    MOVLW	    'A'
-    call	    USART_SEND
-    goto	    start
+    CALL	    ADC_GET
+    MOVFW	    ADRESH	    ; Copy the result into W
     
-    END			    ; Fin du code
+    CALL	    USART_SEND
+    GOTO	    start
+    
+    END				     ; Fin du code
