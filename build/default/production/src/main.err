@@ -11,8 +11,7 @@ Warning[207] SRC\MAIN.ASM 25 : Found label after column 1. (OUT5)
 Warning[207] SRC\MAIN.ASM 28 : Found label after column 1. (INT_CNT)
 Warning[207] SRC\MAIN.ASM 29 : Found label after column 1. (LAST_CHAR)
 Warning[207] SRC\MAIN.ASM 32 : Found label after column 1. (MODE)
-Warning[207] SRC\MAIN.ASM 310 : Found label after column 1. (TIMER1_INTERRUPT)
-Message[305] SRC\MAIN.ASM 324 : Using default destination of 1 (file).
-Message[305] SRC\MAIN.ASM 379 : Using default destination of 1 (file).
-Message[305] SRC\MAIN.ASM 394 : Using default destination of 1 (file).
-Message[305] SRC\MAIN.ASM 403 : Using default destination of 1 (file).
+Message[305] SRC\MAIN.ASM 328 : Using default destination of 1 (file).
+Message[305] SRC\MAIN.ASM 380 : Using default destination of 1 (file).
+Message[305] SRC\MAIN.ASM 395 : Using default destination of 1 (file).
+Message[305] SRC\MAIN.ASM 404 : Using default destination of 1 (file).
