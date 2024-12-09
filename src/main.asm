@@ -22,6 +22,47 @@
     GOTO	init
     
 ; ------------------------------------------------------------------------------
+; INTERRUPT ROUTINES
+; ------------------------------------------------------------------------------
+    ; Interrupt vector
+    ORG	    0x004
+    
+INTERRUPT_HANDLER:
+    BTFSC	    PIR1,   TMR1IF	    ; Handle Timer 1 Interrupt
+	CALL	    TIMER1_INTERRUPT
+	
+    BTFSC	    PIR1,   RCIF	    ; Disabled, shouldn't be triggered
+	CALL	    USART_INTERRUPT	    ; Handle Timer 0 Interrupt
+
+    RETFIE				    ; Return from interrupt
+	
+; ------------------------------------------------------------------------------
+; INTERRUPTS INITIALIZATION
+; ------------------------------------------------------------------------------
+INT_INIT:
+    BANKSEL	    PIR1
+    MOVLW	    B'00000001'	    ; /
+				    ; /
+				    ; /
+				    ; /
+				    ; /
+				    ; /
+				    ; /
+				    ; Timer 1 IF
+    MOVWF	    PIR1
+    
+    BANKSEL	    INTCON
+    MOVLW	    B'11000001'	    ; GIE
+				    ; PEIE (For Timer 1)
+				    ; /
+				    ; /
+				    ; /
+				    ; /
+				    ; /
+				    ; /
+    MOVWF	    INTCON
+    
+; ------------------------------------------------------------------------------
 ; MEMORY
 ; ------------------------------------------------------------------------------
     ; General usage variables
@@ -37,6 +78,9 @@
     OUT3	EQU	    32h
     OUT4	EQU	    33h	
     OUT5	EQU	    34h
+	
+    ; Interrupt counter
+    INT_CNT	EQU	    40h
     
 ; ------------------------------------------------------------------------------
 ; ADC
@@ -162,6 +206,55 @@ USART_SEND_ADC_BUF:		    ; Send the ADC output buffer, char by char and add \r\n
     RETURN
     
 ; ------------------------------------------------------------------------------
+    
+USART_INTERRUPT:    ; For later. Only clear the bit.
+    BCF		    PIR1,   RCIF
+    RETURN
+    
+; ------------------------------------------------------------------------------
+; TIMER 1
+; ------------------------------------------------------------------------------
+
+TIMER1_INIT:
+    BANKSEL	    T1CON
+    MOVLW	    B'00110001'	    ; /
+				    ; /
+				    ; 1:8 Prescale
+				    ; No oscillator
+				    ; /
+				    ; Internal clock (Fosc / 4)
+				    ; Timer Enabled
+    MOVWF	    T1CON
+       
+    RETURN			    ; End of function
+    
+ TIMER1_INTERRUPT:
+    BCF		    PIR1,   TMR1IF  ; Clear Interrupt pin
+    
+    BANKSEL	    TMR1H	    ; Load 15 535 to trigger interrupt every 50 000
+    MOVLW	    0x3B
+    MOVWF	    TMR1H
+    MOVLW	    0xCA
+    MOVWF	    TMR1L
+    
+    INCF	    INT_CNT	    ; Increment the interrupt counter
+    
+    MOVLW	    .5
+    SUBWF	    INT_CNT,   W
+    
+    BZ		    TRIGGERED_INT   ; Continue the interrupt
+    RETURN
+    
+TRIGGERED_INT:
+    MOVLW	    .0		    ; Reset the counter
+    MOVWF	    INT_CNT
+    
+    MOVLW	    'I'
+    CALL	    USART_SEND	    ; Send a dummy character
+    
+    RETURN
+    
+; ------------------------------------------------------------------------------
 ; CONVERSION
 ; ------------------------------------------------------------------------------
 GET_VOLT:
@@ -271,6 +364,11 @@ init:
     ; Config ADC readings.
     CALL	    ADC_INIT
     
+    ; Configure the interrupt subsystem
+    CALL	    INT_INIT
+    
+    ; Configure the timer 1
+    CALL	    TIMER1_INIT
     
     ; Jump to the start
     GOTO	    start
