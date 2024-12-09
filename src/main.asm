@@ -40,7 +40,7 @@ INTERRUPT_HANDLER:
 ; INTERRUPTS INITIALIZATION
 ; ------------------------------------------------------------------------------
 INT_INIT:
-    BANKSEL	    PIR1
+    BANKSEL	    PIE1
     MOVLW	    B'00000001'	    ; /
 				    ; /
 				    ; /
@@ -49,7 +49,7 @@ INT_INIT:
 				    ; /
 				    ; /
 				    ; Timer 1 IF
-    MOVWF	    PIR1
+    MOVWF	    PIE1
     
     BANKSEL	    INTCON
     MOVLW	    B'11000001'	    ; GIE
@@ -229,6 +229,7 @@ TIMER1_INIT:
     RETURN			    ; End of function
     
  TIMER1_INTERRUPT:
+    BANKSEL	    PIR1	    
     BCF		    PIR1,   TMR1IF  ; Clear Interrupt pin
     
     BANKSEL	    TMR1H	    ; Load 15 535 to trigger interrupt every 50 000
@@ -249,8 +250,12 @@ TRIGGERED_INT:
     MOVLW	    .0		    ; Reset the counter
     MOVWF	    INT_CNT
     
-    MOVLW	    'I'
-    CALL	    USART_SEND	    ; Send a dummy character
+    CALL	    ADC_GET
+    MOVFW	    ADRESH	    ; Copy the result into W
+    
+    CALL	    GET_VOLT
+
+    CALL	    USART_SEND_ADC_BUF	; Write the output buffer
     
     RETURN
     
@@ -374,12 +379,5 @@ init:
     GOTO	    start
     
 start:
-    CALL	    ADC_GET
-    MOVFW	    ADRESH	    ; Copy the result into W
-    
-    CALL	    GET_VOLT
-
-    CALL	    USART_SEND_ADC_BUF	; Write the output buffer
     GOTO	    start
-    
     END				     ; Fin du code
