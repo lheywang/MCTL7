@@ -28,10 +28,11 @@
     ORG	    0x004
     
 INTERRUPT_HANDLER:
+    BANKSEL	    PIR1
     BTFSC	    PIR1,   TMR1IF	    ; Handle Timer 1 Interrupt
 	CALL	    TIMER1_INTERRUPT
 	
-    BTFSC	    PIR1,   RCIF	    ; Disabled, shouldn't be triggered
+    BTFSC	    PIR1,   RCIF	    
 	CALL	    USART_INTERRUPT	    ; Handle Timer 0 Interrupt
 
     RETFIE				    ; Return from interrupt
@@ -41,9 +42,9 @@ INTERRUPT_HANDLER:
 ; ------------------------------------------------------------------------------
 INT_INIT:
     BANKSEL	    PIE1
-    MOVLW	    B'00000001'	    ; /
+    MOVLW	    B'00100001'	    ; /
 				    ; /
-				    ; /
+				    ; USART Reception interrupt
 				    ; /
 				    ; /
 				    ; /
@@ -61,6 +62,10 @@ INT_INIT:
 				    ; /
 				    ; /
     MOVWF	    INTCON
+    
+    BANKSEL	    PIR1	    
+    BCF		    PIR1,   TMR1IF  ; Clear Interrupt flags
+    BCF		    PIR1,   RCIF
     
 ; ------------------------------------------------------------------------------
 ; MEMORY
@@ -81,6 +86,10 @@ INT_INIT:
 	
     ; Interrupt counter
     INT_CNT	EQU	    40h
+    LAST_CHAR	EQU	    41h
+   
+    ; Operating mode store
+    MODE	EQU	    50h
     
 ; ------------------------------------------------------------------------------
 ; ADC
@@ -153,10 +162,10 @@ USART_INIT:
     MOVWF	    TXSTA
 
     BANKSEL	    RCSTA
-    MOVLW	    B'10000000'	    ; Serial port Enabled
+    MOVLW	    B'10010000'	    ; Serial port Enabled
 				    ; 8 bit data
 				    ; Don't care
-				    ; Continous receive disabled
+				    ; Continous receive enabled
 				    ; Disable address
 				    ; No framing error
 				    ; No overrun error
@@ -207,8 +216,68 @@ USART_SEND_ADC_BUF:		    ; Send the ADC output buffer, char by char and add \r\n
     
 ; ------------------------------------------------------------------------------
     
-USART_INTERRUPT:    ; For later. Only clear the bit.
-    BCF		    PIR1,   RCIF
+USART_INTERRUPT:
+    BANKSEL	    RCREG	    
+    MOVFW	    RCREG	    ; Perform a read on the RCREG.
+				    ; The hardware also clear the PIR1 : RCIF if there isn't anymore read to be done
+    
+    MOVWF	    LAST_CHAR	    ; Automatic mode
+    MOVLW	    'a'
+    SUBWF	    LAST_CHAR,	W
+    BZ		    AUTOMATIC
+    MOVLW	    'A'
+    SUBWF	    LAST_CHAR,	W
+    BZ		    AUTOMATIC
+    
+    MOVWF	    LAST_CHAR	    ; Manual mode
+    MOVLW	    'r'
+    SUBWF	    LAST_CHAR,	W
+    BZ		    MANUAL
+    MOVLW	    'R'
+    SUBWF	    LAST_CHAR,	W
+    BZ		    MANUAL
+    
+    MOVWF	    LAST_CHAR	    ; Measure needed mode
+    MOVLW	    'd'
+    SUBWF	    LAST_CHAR,	W
+    BZ		    REQUEST
+    MOVLW	    'D'
+    SUBWF	    LAST_CHAR,	W
+    BZ		    REQUEST
+    
+    RETURN			    ; Any other character will end up here
+				
+AUTOMATIC:				    
+    BANKSEL	    T1CON
+    BSF		    T1CON,	TMR1ON	; Simply enable the timer 1 operation
+    
+    MOVLW	    0x00
+    MOVWF	    MODE		; Store the mode operation here
+    
+    RETURN
+    
+MANUAL:
+    BANKSEL	    T1CON
+    BCF		    T1CON,	TMR1ON	; Simply disable the timer 1 operation
+    
+    MOVLW	    0x01
+    MOVWF	    MODE		; Store the mode operation here
+    
+    RETURN
+    
+REQUEST:
+    MOVLW	    0x01
+    SUBWF	    MODE,	W	; Check the operating mode
+    
+    BZ		    MEASURE 
+    
+    RETURN
+    
+MEASURE:				; Print measure
+    CALL	    ADC_GET
+    MOVFW	    ADRESH		; Copy the result into W
+    CALL	    GET_VOLT
+    CALL	    USART_SEND_ADC_BUF	; Write the output buffer
     RETURN
     
 ; ------------------------------------------------------------------------------
@@ -238,7 +307,7 @@ TIMER1_INIT:
     MOVLW	    0xCA
     MOVWF	    TMR1L
     
-    INCF	    INT_CNT	    ; Increment the interrupt counter
+    INCF	    INT_CNT	    ; Increment the interrupt counter. Located on the same bank as TMR1H
     
     MOVLW	    .5
     SUBWF	    INT_CNT,   W
@@ -379,5 +448,5 @@ init:
     GOTO	    start
     
 start:
-    GOTO	    start
+f    GOTO	    start
     END				     ; Fin du code

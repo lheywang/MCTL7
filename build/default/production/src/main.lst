@@ -1,4 +1,4 @@
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE  1
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -44,419 +44,502 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00028     ORG     0x004
                       00029     
 0004                  00030 INTERRUPT_HANDLER:
-0004   180C           00031     BTFSC           PIR1,   TMR1IF          ; Handle Timer 1 Interrupt
-0005   2???           00032         CALL        TIMER1_INTERRUPT
-                      00033         
-0006   1A8C           00034     BTFSC           PIR1,   RCIF            ; Disabled, shouldn't be triggered
-0007   2???           00035         CALL        USART_INTERRUPT         ; Handle Timer 0 Interrupt
-                      00036 
-0008   0009           00037     RETFIE                                  ; Return from interrupt
-                      00038         
-                      00039 ; ------------------------------------------------------------------------------
-                      00040 ; INTERRUPTS INITIALIZATION
-                      00041 ; ------------------------------------------------------------------------------
-0009                  00042 INT_INIT:
-0009   1683 1303      00043     BANKSEL         PIE1
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE  2
+0004   1283 1303      00031     BANKSEL         PIR1
+0006   180C           00032     BTFSC           PIR1,   TMR1IF          ; Handle Timer 1 Interrupt
+0007   2???           00033         CALL        TIMER1_INTERRUPT
+                      00034         
+0008   1A8C           00035     BTFSC           PIR1,   RCIF            
+0009   2???           00036         CALL        USART_INTERRUPT         ; Handle Timer 0 Interrupt
+                      00037 
+000A   0009           00038     RETFIE                                  ; Return from interrupt
+                      00039         
+                      00040 ; ------------------------------------------------------------------------------
+                      00041 ; INTERRUPTS INITIALIZATION
+                      00042 ; ------------------------------------------------------------------------------
+000B                  00043 INT_INIT:
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-000B   3001           00044     MOVLW           B'00000001'     ; /
-                      00045                                     ; /
+000B   1683 1303      00044     BANKSEL         PIE1
+000D   3021           00045     MOVLW           B'00100001'     ; /
                       00046                                     ; /
-                      00047                                     ; /
+                      00047                                     ; USART Reception interrupt
                       00048                                     ; /
                       00049                                     ; /
                       00050                                     ; /
-                      00051                                     ; Timer 1 IF
-000C   008C           00052     MOVWF           PIE1
-                      00053     
-000D   1283 1303      00054     BANKSEL         INTCON
-000F   30C1           00055     MOVLW           B'11000001'     ; GIE
-                      00056                                     ; PEIE (For Timer 1)
-                      00057                                     ; /
+                      00051                                     ; /
+                      00052                                     ; Timer 1 IF
+000E   008C           00053     MOVWF           PIE1
+                      00054     
+000F   1283 1303      00055     BANKSEL         INTCON
+0011   30C1           00056     MOVLW           B'11000001'     ; GIE
+                      00057                                     ; PEIE (For Timer 1)
                       00058                                     ; /
                       00059                                     ; /
                       00060                                     ; /
                       00061                                     ; /
                       00062                                     ; /
-0010   008B           00063     MOVWF           INTCON
-                      00064     
-                      00065 ; ------------------------------------------------------------------------------
-                      00066 ; MEMORY
-                      00067 ; ------------------------------------------------------------------------------
-                      00068     ; General usage variables
+                      00063                                     ; /
+0012   008B           00064     MOVWF           INTCON
+                      00065     
+0013   1283 1303      00066     BANKSEL         PIR1            
+0015   100C           00067     BCF             PIR1,   TMR1IF  ; Clear Interrupt flags
+0016   128C           00068     BCF             PIR1,   RCIF
+                      00069     
+                      00070 ; ------------------------------------------------------------------------------
+                      00071 ; MEMORY
+                      00072 ; ------------------------------------------------------------------------------
+                      00073     ; General usage variables
 Warning[207]: Found label after column 1. (CVT)
-  00000020            00069     CVT         EQU         20h
+  00000020            00074     CVT         EQU         20h
 Warning[207]: Found label after column 1. (CNT)
-  00000021            00070     CNT         EQU         21h
+  00000021            00075     CNT         EQU         21h
 Warning[207]: Found label after column 1. (SUM)
-  00000022            00071     SUM         EQU         22h
+  00000022            00076     SUM         EQU         22h
 Warning[207]: Found label after column 1. (SAV)
-  00000023            00072     SAV         EQU         23h
+  00000023            00077     SAV         EQU         23h
 Warning[207]: Found label after column 1. (CNT2)
-  00000024            00073     CNT2        EQU         24h
-                      00074 
-                      00075     ; Output buffer
+  00000024            00078     CNT2        EQU         24h
+                      00079 
+                      00080     ; Output buffer
 Warning[207]: Found label after column 1. (OUT1)
-  00000030            00076     OUT1        EQU         30h
+  00000030            00081     OUT1        EQU         30h
 Warning[207]: Found label after column 1. (OUT2)
-  00000031            00077     OUT2        EQU         31h
+  00000031            00082     OUT2        EQU         31h
 Warning[207]: Found label after column 1. (OUT3)
-  00000032            00078     OUT3        EQU         32h
+  00000032            00083     OUT3        EQU         32h
 Warning[207]: Found label after column 1. (OUT4)
-  00000033            00079     OUT4        EQU         33h 
+  00000033            00084     OUT4        EQU         33h 
 Warning[207]: Found label after column 1. (OUT5)
-  00000034            00080     OUT5        EQU         34h
-                      00081         
-                      00082     ; Interrupt counter
+  00000034            00085     OUT5        EQU         34h
+                      00086         
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00087     ; Interrupt counter
 Warning[207]: Found label after column 1. (INT_CNT)
-  00000040            00083     INT_CNT     EQU         40h
-                      00084     
-                      00085 ; ------------------------------------------------------------------------------
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE  3
-
-
-LOC  OBJECT CODE     LINE SOURCE TEXT
-  VALUE
-
-                      00086 ; ADC
-                      00087 ; ------------------------------------------------------------------------------
-                      00088     
-0011                  00089 ADC_INIT:
-                      00090     ; Initilize the USART peripheral.
-                      00091     ; Used register : W
-0011   1683 1303      00092     BANKSEL     ADCON1
+  00000040            00088     INT_CNT     EQU         40h
+Warning[207]: Found label after column 1. (LAST_CHAR)
+  00000041            00089     LAST_CHAR   EQU         41h
+                      00090    
+                      00091     ; Operating mode store
+Warning[207]: Found label after column 1. (MODE)
+  00000050            00092     MODE        EQU         50h
                       00093     
-0013   300E           00094     MOVLW       B'00001110'     ; Left justifY
-                      00095                                 ; 1 analog channel
-                      00096                                 ; VDD and VSS references
-0014   009F           00097     MOVWF       ADCON1          
-                      00098 
-0015   1283 1303      00099     BANKSEL     ADCON0  
-0017   3041           00100     MOVLW       B'01000001'     ; Fosc/8
-                      00101                                 ; A/D enabled
-0018   009F           00102     MOVWF       ADCON0
-                      00103        
-0019   0008           00104     RETURN                      ; End of function
-                      00105     
-                      00106 ; ------------------------------------------------------------------------------
-                      00107     
-001A                  00108 ADC_CONVERT:
-                      00109     ; Transmit the value of W over USART
-                      00110     ; Used register : W
-                      00111     ; Return registe : W
-                      00112     
-001A   151F           00113     BSF         ADCON0,     GO
+                      00094 ; ------------------------------------------------------------------------------
+                      00095 ; ADC
+                      00096 ; ------------------------------------------------------------------------------
+                      00097     
+0017                  00098 ADC_INIT:
+                      00099     ; Initilize the USART peripheral.
+                      00100     ; Used register : W
+0017   1683 1303      00101     BANKSEL     ADCON1
+                      00102     
+0019   300E           00103     MOVLW       B'00001110'     ; Left justifY
+                      00104                                 ; 1 analog channel
+                      00105                                 ; VDD and VSS references
+001A   009F           00106     MOVWF       ADCON1          
+                      00107 
+001B   1283 1303      00108     BANKSEL     ADCON0  
+001D   3041           00109     MOVLW       B'01000001'     ; Fosc/8
+                      00110                                 ; A/D enabled
+001E   009F           00111     MOVWF       ADCON0
+                      00112        
+001F   0008           00113     RETURN                      ; End of function
                       00114     
-001B   0008           00115     RETURN
+                      00115 ; ------------------------------------------------------------------------------
                       00116     
-001C                  00117 ADC_GET:
-                      00118     ; ADC Convert shall be runned before
-                      00119     ; Used register : /
-                      00120     
-001C   2???           00121     CALL        ADC_CONVERT         ; Start the conversion
-                      00122     
-001D   191F           00123     BTFSC       ADCON0,     GO      ; Waiting for the conversion to end
-001E   2???           00124         GOTO    ADC_GET
-                      00125 
-001F   0008           00126     RETURN                          ; End of function
-                      00127     
-                      00128 ; ------------------------------------------------------------------------------
-                      00129 ; USART
-                      00130 ; ------------------------------------------------------------------------------
+0020                  00117 ADC_CONVERT:
+                      00118     ; Transmit the value of W over USART
+                      00119     ; Used register : W
+                      00120     ; Return registe : W
+                      00121     
+0020   151F           00122     BSF         ADCON0,     GO
+                      00123     
+0021   0008           00124     RETURN
+                      00125     
+0022                  00126 ADC_GET:
+                      00127     ; ADC Convert shall be runned before
+                      00128     ; Used register : /
+                      00129     
+0022   2???           00130     CALL        ADC_CONVERT         ; Start the conversion
                       00131     
-0020                  00132 USART_INIT:
-                      00133     ; Initilize the USART peripheral.
-                      00134     ; Used register : W
-                      00135     
-0020   1683 1303      00136     BANKSEL         TRISC
-0022   30BF           00137     MOVLW           B'10111111'     ; TX as OUT (RC6), RX as IN (RC7)
-0023   0087           00138     MOVWF           TRISC
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE  4
+0023   191F           00132     BTFSC       ADCON0,     GO      ; Waiting for the conversion to end
+0024   2???           00133         GOTO    ADC_GET
+                      00134 
+0025   0008           00135     RETURN                          ; End of function
+                      00136     
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00139 
-0024   1683 1303      00140     BANKSEL         SPBRG
-0026   3033           00141     MOVLW           .51             ; Baud rate divider for 9600 (9615 exactly)
-0027   0099           00142     MOVWF           SPBRG
-                      00143 
-0028   1683 1303      00144     BANKSEL         TXSTA
-002A   3024           00145     MOVLW           B'00100100'     ; Don't care.
-                      00146                                     ; 8 bit data
-                      00147                                     ; Transmit enable
-                      00148                                     ; Asynchronous
-                      00149                                     ; /
-                      00150                                     ; High speed mode
-                      00151                                     ; Transmit status bit empty
-                      00152                                     ; 9th bit of data (unused)
-002B   0098           00153     MOVWF           TXSTA
-                      00154 
-002C   1283 1303      00155     BANKSEL         RCSTA
-002E   3080           00156     MOVLW           B'10000000'     ; Serial port Enabled
-                      00157                                     ; 8 bit data
-                      00158                                     ; Don't care
-                      00159                                     ; Continous receive disabled
-                      00160                                     ; Disable address
-                      00161                                     ; No framing error
-                      00162                                     ; No overrun error
-                      00163                                     ; 9th bit of data (unused)
-002F   0098           00164     MOVWF           RCSTA
-                      00165        
-0030   0008           00166     RETURN                          ; End of function
-                      00167     
-                      00168 ; ------------------------------------------------------------------------------
-                      00169     
-0031                  00170 USART_SEND:
-                      00171     ; Transmit the value of W over USART
-                      00172     ; Used register : W
-                      00173     
-0031   1683 1303      00174     BANKSEL         TXSTA           ; Selection of bank
-                      00175     
-0033   1C98           00176     BTFSS           TXSTA, TRMT     ; Check register status
-0034   2???           00177         GOTO        USART_SEND
+                      00137 ; ------------------------------------------------------------------------------
+                      00138 ; USART
+                      00139 ; ------------------------------------------------------------------------------
+                      00140     
+0026                  00141 USART_INIT:
+                      00142     ; Initilize the USART peripheral.
+                      00143     ; Used register : W
+                      00144     
+0026   1683 1303      00145     BANKSEL         TRISC
+0028   30BF           00146     MOVLW           B'10111111'     ; TX as OUT (RC6), RX as IN (RC7)
+0029   0087           00147     MOVWF           TRISC
+                      00148 
+002A   1683 1303      00149     BANKSEL         SPBRG
+002C   3033           00150     MOVLW           .51             ; Baud rate divider for 9600 (9615 exactly)
+002D   0099           00151     MOVWF           SPBRG
+                      00152 
+002E   1683 1303      00153     BANKSEL         TXSTA
+0030   3024           00154     MOVLW           B'00100100'     ; Don't care.
+                      00155                                     ; 8 bit data
+                      00156                                     ; Transmit enable
+                      00157                                     ; Asynchronous
+                      00158                                     ; /
+                      00159                                     ; High speed mode
+                      00160                                     ; Transmit status bit empty
+                      00161                                     ; 9th bit of data (unused)
+0031   0098           00162     MOVWF           TXSTA
+                      00163 
+0032   1283 1303      00164     BANKSEL         RCSTA
+0034   3090           00165     MOVLW           B'10010000'     ; Serial port Enabled
+                      00166                                     ; 8 bit data
+                      00167                                     ; Don't care
+                      00168                                     ; Continous receive enabled
+                      00169                                     ; Disable address
+                      00170                                     ; No framing error
+                      00171                                     ; No overrun error
+                      00172                                     ; 9th bit of data (unused)
+0035   0098           00173     MOVWF           RCSTA
+                      00174        
+0036   0008           00175     RETURN                          ; End of function
+                      00176     
+                      00177 ; ------------------------------------------------------------------------------
                       00178     
-0035   1283 1303      00179     BANKSEL         TXREG           ; Select TXREG Bank
-0037   0099           00180     MOVWF           TXREG           ; Write A to TXREG
-                      00181     
-0038   0008           00182     RETURN                          ; End of function
-                      00183     
-0039                  00184 USART_SEND_ADC_BUF:                 ; Send the ADC output buffer, char by char and add \r\n
-0039   0830           00185     MOVFW           OUT1
-003A   2???           00186     CALL            USART_SEND
+0037                  00179 USART_SEND:
+                      00180     ; Transmit the value of W over USART
+                      00181     ; Used register : W
+                      00182     
+0037   1683 1303      00183     BANKSEL         TXSTA           ; Selection of bank
+                      00184     
+0039   1C98           00185     BTFSS           TXSTA, TRMT     ; Check register status
+003A   2???           00186         GOTO        USART_SEND
                       00187     
-003B   0831           00188     MOVFW           OUT2
-003C   2???           00189     CALL            USART_SEND
-                      00190     
-003D   0832           00191     MOVFW           OUT3
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE  5
+003B   1283 1303      00188     BANKSEL         TXREG           ; Select TXREG Bank
+003D   0099           00189     MOVWF           TXREG           ; Write A to TXREG
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-003E   2???           00192     CALL            USART_SEND
-                      00193     
-003F   0833           00194     MOVFW           OUT4
+                      00190     
+003E   0008           00191     RETURN                          ; End of function
+                      00192     
+003F                  00193 USART_SEND_ADC_BUF:                 ; Send the ADC output buffer, char by char and add \r\n
+003F   0830           00194     MOVFW           OUT1
 0040   2???           00195     CALL            USART_SEND
                       00196     
-0041   0834           00197     MOVFW           OUT5
+0041   0831           00197     MOVFW           OUT2
 0042   2???           00198     CALL            USART_SEND
                       00199     
-0043   300D           00200     MOVLW           '\r'
+0043   0832           00200     MOVFW           OUT3
 0044   2???           00201     CALL            USART_SEND
                       00202     
-0045   300A           00203     MOVLW           '\n'
+0045   0833           00203     MOVFW           OUT4
 0046   2???           00204     CALL            USART_SEND
                       00205     
-0047   0008           00206     RETURN
-                      00207     
-                      00208 ; ------------------------------------------------------------------------------
-                      00209     
-0048                  00210 USART_INTERRUPT:    ; For later. Only clear the bit.
-0048   128C           00211     BCF             PIR1,   RCIF
-0049   0008           00212     RETURN
-                      00213     
-                      00214 ; ------------------------------------------------------------------------------
-                      00215 ; TIMER 1
-                      00216 ; ------------------------------------------------------------------------------
-                      00217 
-004A                  00218 TIMER1_INIT:
-004A   1283 1303      00219     BANKSEL         T1CON
-004C   3031           00220     MOVLW           B'00110001'     ; /
-                      00221                                     ; /
-                      00222                                     ; 1:8 Prescale
-                      00223                                     ; No oscillator
-                      00224                                     ; /
-                      00225                                     ; Internal clock (Fosc / 4)
-                      00226                                     ; Timer Enabled
-004D   0090           00227     MOVWF           T1CON
-                      00228        
-004E   0008           00229     RETURN                          ; End of function
-                      00230     
-Warning[207]: Found label after column 1. (TIMER1_INTERRUPT)
-004F                  00231  TIMER1_INTERRUPT:
-004F   1283 1303      00232     BANKSEL         PIR1            
-0051   100C           00233     BCF             PIR1,   TMR1IF  ; Clear Interrupt pin
-                      00234     
-0052   1283 1303      00235     BANKSEL         TMR1H           ; Load 15 535 to trigger interrupt every 50 000
-0054   303B           00236     MOVLW           0x3B
-0055   008F           00237     MOVWF           TMR1H
-0056   30CA           00238     MOVLW           0xCA
-0057   008E           00239     MOVWF           TMR1L
-                      00240     
-Message[305]: Using default destination of 1 (file).
-0058   0AC0           00241     INCF            INT_CNT         ; Increment the interrupt counter
-                      00242     
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE  6
+0047   0834           00206     MOVFW           OUT5
+0048   2???           00207     CALL            USART_SEND
+                      00208     
+0049   300D           00209     MOVLW           '\r'
+004A   2???           00210     CALL            USART_SEND
+                      00211     
+004B   300A           00212     MOVLW           '\n'
+004C   2???           00213     CALL            USART_SEND
+                      00214     
+004D   0008           00215     RETURN
+                      00216     
+                      00217 ; ------------------------------------------------------------------------------
+                      00218     
+004E                  00219 USART_INTERRUPT:
+004E   1283 1303      00220     BANKSEL         RCREG           
+0050   081A           00221     MOVFW           RCREG           ; Perform a read on the RCREG.
+                      00222                                     ; The hardware also clear the PIR1 : RCIF if there isn't anymore rea
+                            d to be done
+                      00223     
+0051   00C1           00224     MOVWF           LAST_CHAR       ; Automatic mode
+0052   3061           00225     MOVLW           'a'
+0053   0241           00226     SUBWF           LAST_CHAR,  W
+0054   1903 2???      00227     BZ              AUTOMATIC
+0056   3041           00228     MOVLW           'A'
+0057   0241           00229     SUBWF           LAST_CHAR,  W
+0058   1903 2???      00230     BZ              AUTOMATIC
+                      00231     
+005A   00C1           00232     MOVWF           LAST_CHAR       ; Manual mode
+005B   3072           00233     MOVLW           'r'
+005C   0241           00234     SUBWF           LAST_CHAR,  W
+005D   1903 2???      00235     BZ              MANUAL
+005F   3052           00236     MOVLW           'R'
+0060   0241           00237     SUBWF           LAST_CHAR,  W
+0061   1903 2???      00238     BZ              MANUAL
+                      00239     
+0063   00C1           00240     MOVWF           LAST_CHAR       ; Measure needed mode
+0064   3064           00241     MOVLW           'd'
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE  6
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-0059   3005           00243     MOVLW           .5
-005A   0240           00244     SUBWF           INT_CNT,   W
-                      00245     
-005B   1903 2???      00246     BZ              TRIGGERED_INT   ; Continue the interrupt
-005D   0008           00247     RETURN
-                      00248     
-005E                  00249 TRIGGERED_INT:
-005E   3000           00250     MOVLW           .0              ; Reset the counter
-005F   00C0           00251     MOVWF           INT_CNT
-                      00252     
-0060   2???           00253     CALL            ADC_GET
-0061   081E           00254     MOVFW           ADRESH          ; Copy the result into W
-                      00255     
-0062   2???           00256     CALL            GET_VOLT
-                      00257 
-0063   2???           00258     CALL            USART_SEND_ADC_BUF  ; Write the output buffer
-                      00259     
-0064   0008           00260     RETURN
-                      00261     
-                      00262 ; ------------------------------------------------------------------------------
-                      00263 ; CONVERSION
-                      00264 ; ------------------------------------------------------------------------------
-0065                  00265 GET_VOLT:
-                      00266     ; Get the integer part of the voltage
-                      00267     ; Used register : W
-                      00268     ; Input register : W
-                      00269     ; Return register : OUT1
-                      00270     
-0065   1283 1303      00271     BANKSEL         TMR0            ; Dummy selection of the bank 0$
-                      00272     
-0067   00A0           00273     MOVWF           CVT             ; Place W into CVT and SAV
-0068   00A3           00274     MOVWF           SAV
+0065   0241           00242     SUBWF           LAST_CHAR,  W
+0066   1903 2???      00243     BZ              REQUEST
+0068   3044           00244     MOVLW           'D'
+0069   0241           00245     SUBWF           LAST_CHAR,  W
+006A   1903 2???      00246     BZ              REQUEST
+                      00247     
+006C   0008           00248     RETURN                          ; Any other character will end up here
+                      00249                                 
+006D                  00250 AUTOMATIC:                                  
+006D   1283 1303      00251     BANKSEL         T1CON
+006F   1410           00252     BSF             T1CON,      TMR1ON  ; Simply enable the timer 1 operation
+                      00253     
+0070   3000           00254     MOVLW           0x00
+0071   00D0           00255     MOVWF           MODE                ; Store the mode operation here
+                      00256     
+0072   0008           00257     RETURN
+                      00258     
+0073                  00259 MANUAL:
+0073   1283 1303      00260     BANKSEL         T1CON
+0075   1010           00261     BCF             T1CON,      TMR1ON  ; Simply disable the timer 1 operation
+                      00262     
+0076   3001           00263     MOVLW           0x01
+0077   00D0           00264     MOVWF           MODE                ; Store the mode operation here
+                      00265     
+0078   0008           00266     RETURN
+                      00267     
+0079                  00268 REQUEST:
+0079   3001           00269     MOVLW           0x01
+007A   0250           00270     SUBWF           MODE,       W       ; Check the operating mode
+                      00271     
+007B   1903 2???      00272     BZ              MEASURE 
+                      00273     
+007D   0008           00274     RETURN
                       00275     
-0069   3000           00276     MOVLW           .0
-006A   00A1           00277     MOVWF           CNT             ; Initialize counters at 0
-006B   00A4           00278     MOVWF           CNT2
-                      00279     
-006C   00B0           00280     MOVWF           OUT1            ; Clearing the output buffer
-006D   00B1           00281     MOVWF           OUT2
-006E   00B2           00282     MOVWF           OUT3
-006F   00B3           00283     MOVWF           OUT4
-0070   00B4           00284     MOVWF           OUT5
-                      00285         
-0071   00A2           00286     MOVWF           SUM             ; Clearing the sum
-                      00287 
-0072                  00288 CVT_SUB:                            ; Routine to get the integer part of the measure
-0072   1003           00289     CLRC                            ; Clear carry
-0073   3033           00290     MOVLW           .51             ; Place 51 in the W register
-0074   0220           00291     SUBWF           CVT,    W       ; Remove 51 of CVT
-0075   00A0           00292     MOVWF           CVT
-                      00293     
-0076   1C03 2???      00294     BNC             CVT_INT         ; Exit if negative found
-                      00295     
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE  7
+007E                  00276 MEASURE:                                ; Print measure
+007E   2???           00277     CALL            ADC_GET
+007F   081E           00278     MOVFW           ADRESH              ; Copy the result into W
+0080   2???           00279     CALL            GET_VOLT
+0081   2???           00280     CALL            USART_SEND_ADC_BUF  ; Write the output buffer
+0082   0008           00281     RETURN
+                      00282     
+                      00283 ; ------------------------------------------------------------------------------
+                      00284 ; TIMER 1
+                      00285 ; ------------------------------------------------------------------------------
+                      00286 
+0083                  00287 TIMER1_INIT:
+0083   1283 1303      00288     BANKSEL         T1CON
+0085   3031           00289     MOVLW           B'00110001'     ; /
+                      00290                                     ; /
+                      00291                                     ; 1:8 Prescale
+                      00292                                     ; No oscillator
+                      00293                                     ; /
+                      00294                                     ; Internal clock (Fosc / 4)
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE  7
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-Message[305]: Using default destination of 1 (file).
-0078   0AA1           00296     INCF            CNT             ; If not carry nor zero : Increment and restart
-                      00297     
-0079   0822           00298     MOVFW           SUM             ; Increment the integer part register
-007A   3E33           00299     ADDLW           .51
-007B   00A2           00300     MOVWF           SUM
-                      00301     
-007C   2???           00302     GOTO            CVT_SUB         ; Jump
-                      00303         
-007D                  00304 CVT_INT:
-007D   0821           00305     MOVFW           CNT
-007E   3E30           00306     ADDLW           30h             ; Convert to ASCII character
-                      00307     
-007F   00B0           00308     MOVWF           OUT1            ; Copy into output buffer
+                      00295                                     ; Timer Enabled
+0086   0090           00296     MOVWF           T1CON
+                      00297        
+0087   0008           00298     RETURN                          ; End of function
+                      00299     
+Warning[207]: Found label after column 1. (TIMER1_INTERRUPT)
+0088                  00300  TIMER1_INTERRUPT:
+0088   1283 1303      00301     BANKSEL         PIR1            
+008A   100C           00302     BCF             PIR1,   TMR1IF  ; Clear Interrupt pin
+                      00303     
+008B   1283 1303      00304     BANKSEL         TMR1H           ; Load 15 535 to trigger interrupt every 50 000
+008D   303B           00305     MOVLW           0x3B
+008E   008F           00306     MOVWF           TMR1H
+008F   30CA           00307     MOVLW           0xCA
+0090   008E           00308     MOVWF           TMR1L
                       00309     
-0080   0822           00310     MOVFW           SUM             ; Substract the sum of 551 to the input value
 Message[305]: Using default destination of 1 (file).
-0081   02A3           00311     SUBWF           SAV             ; Now, SAV contain the difference between integer and input.
-                      00312 
-0082                  00313 CVT_SUB2:
-0082   3005           00314     MOVLW           .5              ; Place 5 in the W register
-0083   0223           00315     SUBWF           SAV,    W       ; Remove 51 of CVT
-0084   00A3           00316     MOVWF           SAV
+0091   0AC0           00310     INCF            INT_CNT         ; Increment the interrupt counter. Located on the same bank as TMR1H
+                      00311     
+0092   3005           00312     MOVLW           .5
+0093   0240           00313     SUBWF           INT_CNT,   W
+                      00314     
+0094   1903 2???      00315     BZ              TRIGGERED_INT   ; Continue the interrupt
+0096   0008           00316     RETURN
                       00317     
-0085   1C03 2???      00318     BNC             CVT_END         ; Exit if negative found
-                      00319     
-Message[305]: Using default destination of 1 (file).
-0087   0AA4           00320     INCF            CNT2            ; If not carry nor zero : Increment and restart
+0097                  00318 TRIGGERED_INT:
+0097   3000           00319     MOVLW           .0              ; Reset the counter
+0098   00C0           00320     MOVWF           INT_CNT
                       00321     
-0088   2???           00322     GOTO            CVT_SUB2        ; Jump
-                      00323         
-0089                  00324 CVT_END:                            ; Formatting the output by sending the right characters
-0089   0821           00325     MOVFW           CNT
-008A   3E30           00326     ADDLW           30h
-008B   00B0           00327     MOVWF           OUT1
+0099   2???           00322     CALL            ADC_GET
+009A   081E           00323     MOVFW           ADRESH          ; Copy the result into W
+                      00324     
+009B   2???           00325     CALL            GET_VOLT
+                      00326 
+009C   2???           00327     CALL            USART_SEND_ADC_BUF  ; Write the output buffer
                       00328     
-008C   302C           00329     MOVLW           ','
-008D   00B1           00330     MOVWF           OUT2
-                      00331     
-008E   0824           00332     MOVFW           CNT2            ; Print the value
-008F   3E30           00333     ADDLW           30h
-0090   00B2           00334     MOVWF           OUT3
-                      00335     
-0091   303A           00336     MOVLW           ':'
-0092   0232           00337     SUBWF           OUT3,   W
-                      00338     
-0093   1903 2???      00339     BZ              Double
-0095   2???           00340     GOTO            NoDouble        ; No action
+009D   0008           00329     RETURN
+                      00330     
+                      00331 ; ------------------------------------------------------------------------------
+                      00332 ; CONVERSION
+                      00333 ; ------------------------------------------------------------------------------
+009E                  00334 GET_VOLT:
+                      00335     ; Get the integer part of the voltage
+                      00336     ; Used register : W
+                      00337     ; Input register : W
+                      00338     ; Return register : OUT1
+                      00339     
+009E   1283 1303      00340     BANKSEL         TMR0            ; Dummy selection of the bank 0$
                       00341     
-0096                  00342 Double:
-0096   3039           00343     MOVLW           '9'             ; Print 9
-0097   00B2           00344     MOVWF           OUT3
-0098   2???           00345     GOTO            NextChar
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE  8
+00A0   00A0           00342     MOVWF           CVT             ; Place W into CVT and SAV
+00A1   00A3           00343     MOVWF           SAV
+                      00344     
+00A2   3000           00345     MOVLW           .0
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE  8
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
-                      00346     
-0099                  00347 NoDouble:
-0099   0824           00348     MOVFW           CNT2            ; Print the value
-009A   3E30           00349     ADDLW           30h
-009B   00B2           00350     MOVWF           OUT3
-                      00351     
-009C                  00352 NextChar:
-009C   3020           00353     MOVLW           ' '
-009D   00B3           00354     MOVWF           OUT4
-                      00355     
-009E   3056           00356     MOVLW           'V'
-009F   00B4           00357     MOVWF           OUT5
-                      00358     
-00A0   0008           00359     RETURN
-                      00360     
-                      00361 ; ------------------------------------------------------------------------------
-                      00362 ; MAIN
-                      00363 ; ------------------------------------------------------------------------------
-                      00364 
-00A1                  00365 init:
-                      00366     ; Config Serial port (RX)
-00A1   2???           00367     CALL            USART_INIT
-                      00368     
-                      00369     ; Config ADC readings.
-00A2   2???           00370     CALL            ADC_INIT
-                      00371     
-                      00372     ; Configure the interrupt subsystem
-00A3   2???           00373     CALL            INT_INIT
-                      00374     
-                      00375     ; Configure the timer 1
-00A4   2???           00376     CALL            TIMER1_INIT
-                      00377     
-                      00378     ; Jump to the start
-00A5   2???           00379     GOTO            start
-                      00380     
-00A6                  00381 start:
-00A6   2???           00382     GOTO            start
-                      00383  
-3F3A                  00384     END                              ; Fin du code
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE  9
+00A3   00A1           00346     MOVWF           CNT             ; Initialize counters at 0
+00A4   00A4           00347     MOVWF           CNT2
+                      00348     
+00A5   00B0           00349     MOVWF           OUT1            ; Clearing the output buffer
+00A6   00B1           00350     MOVWF           OUT2
+00A7   00B2           00351     MOVWF           OUT3
+00A8   00B3           00352     MOVWF           OUT4
+00A9   00B4           00353     MOVWF           OUT5
+                      00354         
+00AA   00A2           00355     MOVWF           SUM             ; Clearing the sum
+                      00356 
+00AB                  00357 CVT_SUB:                            ; Routine to get the integer part of the measure
+00AB   1003           00358     CLRC                            ; Clear carry
+00AC   3033           00359     MOVLW           .51             ; Place 51 in the W register
+00AD   0220           00360     SUBWF           CVT,    W       ; Remove 51 of CVT
+00AE   00A0           00361     MOVWF           CVT
+                      00362     
+00AF   1C03 2???      00363     BNC             CVT_INT         ; Exit if negative found
+                      00364     
+Message[305]: Using default destination of 1 (file).
+00B1   0AA1           00365     INCF            CNT             ; If not carry nor zero : Increment and restart
+                      00366     
+00B2   0822           00367     MOVFW           SUM             ; Increment the integer part register
+00B3   3E33           00368     ADDLW           .51
+00B4   00A2           00369     MOVWF           SUM
+                      00370     
+00B5   2???           00371     GOTO            CVT_SUB         ; Jump
+                      00372         
+00B6                  00373 CVT_INT:
+00B6   0821           00374     MOVFW           CNT
+00B7   3E30           00375     ADDLW           30h             ; Convert to ASCII character
+                      00376     
+00B8   00B0           00377     MOVWF           OUT1            ; Copy into output buffer
+                      00378     
+00B9   0822           00379     MOVFW           SUM             ; Substract the sum of 551 to the input value
+Message[305]: Using default destination of 1 (file).
+00BA   02A3           00380     SUBWF           SAV             ; Now, SAV contain the difference between integer and input.
+                      00381 
+00BB                  00382 CVT_SUB2:
+00BB   3005           00383     MOVLW           .5              ; Place 5 in the W register
+00BC   0223           00384     SUBWF           SAV,    W       ; Remove 51 of CVT
+00BD   00A3           00385     MOVWF           SAV
+                      00386     
+00BE   1C03 2???      00387     BNC             CVT_END         ; Exit if negative found
+                      00388     
+Message[305]: Using default destination of 1 (file).
+00C0   0AA4           00389     INCF            CNT2            ; If not carry nor zero : Increment and restart
+                      00390     
+00C1   2???           00391     GOTO            CVT_SUB2        ; Jump
+                      00392         
+00C2                  00393 CVT_END:                            ; Formatting the output by sending the right characters
+00C2   0821           00394     MOVFW           CNT
+00C3   3E30           00395     ADDLW           30h
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00C4   00B0           00396     MOVWF           OUT1
+                      00397     
+00C5   302C           00398     MOVLW           ','
+00C6   00B1           00399     MOVWF           OUT2
+                      00400     
+00C7   0824           00401     MOVFW           CNT2            ; Print the value
+00C8   3E30           00402     ADDLW           30h
+00C9   00B2           00403     MOVWF           OUT3
+                      00404     
+00CA   303A           00405     MOVLW           ':'
+00CB   0232           00406     SUBWF           OUT3,   W
+                      00407     
+00CC   1903 2???      00408     BZ              Double
+00CE   2???           00409     GOTO            NoDouble        ; No action
+                      00410     
+00CF                  00411 Double:
+00CF   3039           00412     MOVLW           '9'             ; Print 9
+00D0   00B2           00413     MOVWF           OUT3
+00D1   2???           00414     GOTO            NextChar
+                      00415     
+00D2                  00416 NoDouble:
+00D2   0824           00417     MOVFW           CNT2            ; Print the value
+00D3   3E30           00418     ADDLW           30h
+00D4   00B2           00419     MOVWF           OUT3
+                      00420     
+00D5                  00421 NextChar:
+00D5   3020           00422     MOVLW           ' '
+00D6   00B3           00423     MOVWF           OUT4
+                      00424     
+00D7   3056           00425     MOVLW           'V'
+00D8   00B4           00426     MOVWF           OUT5
+                      00427     
+00D9   0008           00428     RETURN
+                      00429     
+                      00430 ; ------------------------------------------------------------------------------
+                      00431 ; MAIN
+                      00432 ; ------------------------------------------------------------------------------
+                      00433 
+00DA                  00434 init:
+                      00435     ; Config Serial port (RX)
+00DA   2???           00436     CALL            USART_INIT
+                      00437     
+                      00438     ; Config ADC readings.
+00DB   2???           00439     CALL            ADC_INIT
+                      00440     
+                      00441     ; Configure the interrupt subsystem
+00DC   2???           00442     CALL            INT_INIT
+                      00443     
+                      00444     ; Configure the timer 1
+00DD   2???           00445     CALL            TIMER1_INIT
+                      00446     
+                      00447     ; Jump to the start
+00DE   2???           00448     GOTO            start
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00449     
+00DF                  00450 start:
+00DF   2???           00451 f    GOTO           start
+3F3A                  00452     END                              ; Fin du code
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE 11
 
 
 SYMBOL TABLE
@@ -469,9 +552,9 @@ ADCON0                            0000001F
 ADCON1                            0000009F
 ADCS0                             00000006
 ADCS1                             00000007
-ADC_CONVERT                       0000001A
-ADC_GET                           0000001C
-ADC_INIT                          00000011
+ADC_CONVERT                       00000020
+ADC_GET                           00000022
+ADC_INIT                          00000017
 ADDEN                             00000003
 ADFM                              00000007
 ADIE                              00000006
@@ -479,6 +562,7 @@ ADIF                              00000006
 ADON                              00000000
 ADRESH                            0000001E
 ADRESL                            0000009E
+AUTOMATIC                         0000006D
 BCLIE                             00000003
 BCLIF                             00000003
 BF                                00000000
@@ -514,26 +598,26 @@ CHS2                              00000005
 CKE                               00000006
 CKP                               00000004
 CNT                               00000021
-CNT2                              00000024
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE 10
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE 12
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+CNT2                              00000024
 CREN                              00000004
 CSRC                              00000007
 CVT                               00000020
-CVT_END                           00000089
-CVT_INT                           0000007D
-CVT_SUB                           00000072
-CVT_SUB2                          00000082
+CVT_END                           000000C2
+CVT_INT                           000000B6
+CVT_SUB                           000000AB
+CVT_SUB2                          000000BB
 D                                 00000005
 DATA_ADDRESS                      00000005
 DC                                00000001
 D_A                               00000005
 D_NOT_A                           00000005
-Double                            00000096
+Double                            000000CF
 EEADR                             0000010D
 EEADRH                            0000010F
 EECON1                            0000018C
@@ -547,7 +631,7 @@ F                                 00000001
 FERR                              00000002
 FSR                               00000004
 GCEN                              00000007
-GET_VOLT                          00000065
+GET_VOLT                          0000009E
 GIE                               00000007
 GO                                00000002
 GO_DONE                           00000002
@@ -565,21 +649,25 @@ INTEDG                            00000006
 INTERRUPT_HANDLER                 00000004
 INTF                              00000001
 INT_CNT                           00000040
-INT_INIT                          00000009
+INT_INIT                          0000000B
 IRP                               00000007
+LAST_CHAR                         00000041
+MANUAL                            00000073
+MEASURE                           0000007E
+MODE                              00000050
 NOT_A                             00000005
 NOT_ADDRESS                       00000005
-NOT_BO                            00000000
-NOT_BOR                           00000000
-NOT_DONE                          00000002
-NOT_PD                            00000003
-NOT_POR                           00000001
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE 11
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE 13
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000002
+NOT_PD                            00000003
+NOT_POR                           00000001
 NOT_RBPU                          00000007
 NOT_RC8                           00000006
 NOT_T1SYNC                        00000002
@@ -587,8 +675,8 @@ NOT_TO                            00000004
 NOT_TX8                           00000006
 NOT_W                             00000002
 NOT_WRITE                         00000002
-NextChar                          0000009C
-NoDouble                          00000099
+NextChar                          000000D5
+NoDouble                          000000D2
 OBF                               00000006
 OERR                              00000001
 OPTION_REG                        00000081
@@ -628,17 +716,17 @@ R                                 00000002
 RA0                               00000000
 RA1                               00000001
 RA2                               00000002
-RA3                               00000003
-RA4                               00000004
-RA5                               00000005
-RB0                               00000000
-RB1                               00000001
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE 12
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE 14
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RB0                               00000000
+RB1                               00000001
 RB2                               00000002
 RB3                               00000003
 RB4                               00000004
@@ -676,6 +764,7 @@ RE0                               00000000
 RE1                               00000001
 RE2                               00000002
 READ_WRITE                        00000002
+REQUEST                           00000079
 RP0                               00000005
 RP1                               00000006
 RSEN                              00000001
@@ -686,18 +775,18 @@ R_W                               00000002
 S                                 00000003
 SAV                               00000023
 SEN                               00000000
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
 SMP                               00000007
 SPBRG                             00000099
 SPEN                              00000007
 SREN                              00000005
 SSPADD                            00000093
 SSPBUF                            00000013
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE 13
-
-
-SYMBOL TABLE
-  LABEL                             VALUE 
-
 SSPCON                            00000014
 SSPCON2                           00000091
 SSPEN                             00000005
@@ -725,8 +814,8 @@ T1SYNC                            00000002
 T2CKPS0                           00000000
 T2CKPS1                           00000001
 T2CON                             00000012
-TIMER1_INIT                       0000004A
-TIMER1_INTERRUPT                  0000004F
+TIMER1_INIT                       00000083
+TIMER1_INTERRUPT                  00000088
 TMR0                              00000001
 TMR0IE                            00000005
 TMR0IF                            00000002
@@ -745,18 +834,18 @@ TOUTPS0                           00000003
 TOUTPS1                           00000004
 TOUTPS2                           00000005
 TOUTPS3                           00000006
-TRIGGERED_INT                     0000005E
-TRISA                             00000085
-TRISA0                            00000000
-TRISA1                            00000001
-TRISA2                            00000002
-TRISA3                            00000003
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE 14
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE 16
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+TRIGGERED_INT                     00000097
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
 TRISA4                            00000004
 TRISA5                            00000005
 TRISB                             00000086
@@ -801,21 +890,21 @@ TXIF                              00000004
 TXREG                             00000019
 TXSTA                             00000098
 UA                                00000001
-USART_INIT                        00000020
-USART_INTERRUPT                   00000048
-USART_SEND                        00000031
-USART_SEND_ADC_BUF                00000039
-W                                 00000000
-WCOL                              00000007
-WR                                00000001
-WREN                              00000002
-WRERR                             00000003
-MPASM 5.86                          MAIN.ASM   12-9-2024  15:36:34         PAGE 15
+USART_INIT                        00000026
+USART_INTERRUPT                   0000004E
+USART_SEND                        00000037
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE 17
 
 
 SYMBOL TABLE
   LABEL                             VALUE 
 
+USART_SEND_ADC_BUF                0000003F
+W                                 00000000
+WCOL                              00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
 Z                                 00000002
 _BODEN_OFF                        00003FBF
 _BODEN_ON                         00003FFF
@@ -856,11 +945,18 @@ _WRT_OFF                          00003DFF
 _WRT_ON                           00003FFF
 _XT_OSC                           00003FFD
 __16F877                          00000001
-init                              000000A1
-start                             000000A6
+f                                 000000DF
+init                              000000DA
+start                             000000DF
+
+MPASM 5.86                          MAIN.ASM   12-9-2024  16:30:41         PAGE 18
+
+
+
+
 
 Errors   :     0
-Warnings :    12 reported,     0 suppressed
+Warnings :    14 reported,     0 suppressed
 Messages :     4 reported,     6 suppressed
 
 
