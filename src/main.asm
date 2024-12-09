@@ -231,10 +231,27 @@ CVT_END:			    ; Formatting the output by sending the right characters
     MOVLW	    ','
     MOVWF	    OUT2
     
-    MOVFW	    CNT2
+    MOVFW	    CNT2	    ; Print the value
     ADDLW	    30h
     MOVWF	    OUT3
     
+    MOVLW	    ':'
+    SUBWF	    OUT3,   W
+    
+    BZ		    Double
+    GOTO	    NoDouble	    ; No action
+    
+Double:
+    MOVLW	    '9'		    ; Print 9
+    MOVWF	    OUT3
+    GOTO	    NextChar
+    
+NoDouble:
+    MOVFW	    CNT2	    ; Print the value
+    ADDLW	    30h
+    MOVWF	    OUT3
+    
+NextChar:
     MOVLW	    ' '
     MOVWF	    OUT4
     
