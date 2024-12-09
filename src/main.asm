@@ -6,7 +6,31 @@
     INCLUDE	    "p16f877.inc"
     ERRORLEVEL	    -302		; No warnings about banksel
     ERRORLEVEL	    -205		; No warnings about found directives
-   	
+ 
+; ------------------------------------------------------------------------------
+; MEMORY
+; ------------------------------------------------------------------------------
+    ; General usage variables
+    CVT		EQU	    20h
+    CNT		EQU	    21h
+    SUM		EQU	    22h
+    SAV		EQU	    23h
+    CNT2	EQU	    24h
+
+    ; Output buffer
+    OUT1	EQU	    30h
+    OUT2	EQU	    31h
+    OUT3	EQU	    32h
+    OUT4	EQU	    33h	
+    OUT5	EQU	    34h
+	
+    ; Interrupt counter
+    INT_CNT	EQU	    40h
+    LAST_CHAR	EQU	    41h
+   
+    ; Operating mode store
+    MODE	EQU	    50h
+   
 ;   CONFIG
 ;   __config 0xFF39
     __CONFIG _FOSC_HS & _WDTE_OFF & _PWRTE_OFF & _CP_OFF & _BOREN_OFF & _LVP_OFF & _CPD_OFF & _WRT_ON
@@ -67,30 +91,9 @@ INT_INIT:
     BCF		    PIR1,   TMR1IF  ; Clear Interrupt flags
     BCF		    PIR1,   RCIF
     
-; ------------------------------------------------------------------------------
-; MEMORY
-; ------------------------------------------------------------------------------
-    ; General usage variables
-    CVT		EQU	    20h
-    CNT		EQU	    21h
-    SUM		EQU	    22h
-    SAV		EQU	    23h
-    CNT2	EQU	    24h
-
-    ; Output buffer
-    OUT1	EQU	    30h
-    OUT2	EQU	    31h
-    OUT3	EQU	    32h
-    OUT4	EQU	    33h	
-    OUT5	EQU	    34h
-	
-    ; Interrupt counter
-    INT_CNT	EQU	    40h
-    LAST_CHAR	EQU	    41h
+    MOVLW	    0x00
+    MOVWF	    MODE	    ; Initialize the operating mode
    
-    ; Operating mode store
-    MODE	EQU	    50h
-    
 ; ------------------------------------------------------------------------------
 ; ADC
 ; ------------------------------------------------------------------------------
@@ -217,28 +220,30 @@ USART_SEND_ADC_BUF:		    ; Send the ADC output buffer, char by char and add \r\n
 ; ------------------------------------------------------------------------------
     
 USART_INTERRUPT:
+    BANKSEL	    PIE1
+    BTFSS	    PIE1,   RCIE    ; Exit if not enabled
+	RETURN
+    
     BANKSEL	    RCREG	    
     MOVFW	    RCREG	    ; Perform a read on the RCREG.
 				    ; The hardware also clear the PIR1 : RCIF if there isn't anymore read to be done
+    MOVWF	    LAST_CHAR
     
-    MOVWF	    LAST_CHAR	    ; Automatic mode
-    MOVLW	    'a'
+    MOVLW	    'a'		    ; Automatic mode
     SUBWF	    LAST_CHAR,	W
     BZ		    AUTOMATIC
     MOVLW	    'A'
     SUBWF	    LAST_CHAR,	W
     BZ		    AUTOMATIC
-    
-    MOVWF	    LAST_CHAR	    ; Manual mode
-    MOVLW	    'r'
+   
+    MOVLW	    'r'		    ; Manual mode
     SUBWF	    LAST_CHAR,	W
     BZ		    MANUAL
     MOVLW	    'R'
     SUBWF	    LAST_CHAR,	W
     BZ		    MANUAL
     
-    MOVWF	    LAST_CHAR	    ; Measure needed mode
-    MOVLW	    'd'
+    MOVLW	    'd'		    ; Measure needed
     SUBWF	    LAST_CHAR,	W
     BZ		    REQUEST
     MOVLW	    'D'
@@ -298,6 +303,10 @@ TIMER1_INIT:
     RETURN			    ; End of function
     
  TIMER1_INTERRUPT:
+    BANKSEL	    PIE1
+    BTFSS	    PIE1,   TMR1IE  ; Exit if not enabled
+	RETURN
+    
     BANKSEL	    PIR1	    
     BCF		    PIR1,   TMR1IF  ; Clear Interrupt pin
     
@@ -448,5 +457,5 @@ init:
     GOTO	    start
     
 start:
-f    GOTO	    start
+    GOTO	    start
     END				     ; Fin du code
